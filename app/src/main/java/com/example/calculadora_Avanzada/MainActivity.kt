@@ -1,6 +1,6 @@
 package com.example.calculadora_Avanzada
 
-import android.R.attr.button
+
 import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.view.View
@@ -10,19 +10,21 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.calculadora.R
 
+
 class MainActivity : ComponentActivity() {
+
 
     var numero1 = ""
     var numero2 = ""
     var operador = ""
+    var ingresandoSegundoNumero = false
+    var ingresandoPrimerNumero= true
 
 
-    lateinit var operacion : TextView
-    lateinit var resultado : TextView
 
-
-     lateinit var formatoDecimal: DecimalFormat
-
+    lateinit var operacion: TextView
+    lateinit var resultado: TextView
+    lateinit var formatoDecimal: DecimalFormat
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,28 +37,59 @@ class MainActivity : ComponentActivity() {
         resultado = this.findViewById(R.id.resultado)
 
 
-
     }
+
     // Botón para mostrar cada vez que se pulsa un número en el textview de operacion
-    fun pulsarNumero (view: View) {
-        val button:Button = view as Button;
-        numero1 = button.text.toString()
-        operacion.text = numero1
-        Toast.makeText(this,button.text,Toast.LENGTH_LONG).show();
-    }
-    // Botón para mostrar cada vez que se pulsa una operacion
-    fun pulsarOperacion (view: View) {
-        val button: Button = view as Button;
-        operador = button.text.toString()
-        operacion.text = operador
+    fun pulsarNumero(view: View) {
+        val button: Button = view as Button
+
+            if (ingresandoSegundoNumero) {
+                numero2 = operador + numero2 + button.text.toString()
+                operacion.text = numero2
+            } else {
+
+                numero1 = numero1 + button.text.toString();
+                operacion.text = numero1
+            }
+
+
+        }
+        //Toast.makeText(this,button.text,Toast.LENGTH_LONG).show();
+
+        // Botón para mostrar cada vez que se pulsa una operacion
+        fun pulsarOperacion(view: View) {
+            val button: Button = view as Button
+            operador = numero1 + button.text.toString()
+            operacion.text = operador
+            ingresandoSegundoNumero = true
+            operacion.text = operador
+
+
+        }
+
+        fun igual(view: View) {
+            val button: Button = view as Button
+            val resultadoTemporal = ""
+
+            when (operador) {
+                "+" -> (numero1.toDouble() + numero2.toDouble())
+                "-" -> (numero1.toDouble() - numero2.toDouble())
+                "*" -> (numero1.toDouble() * numero2.toDouble())
+                "/" -> (numero1.toDouble() / numero2.toDouble())
+            }
+
+
+        }
+
+        fun resetAC(view: View) {
+            val button: Button = view as Button
+            operacion.text = "0"
+
+
+
+        }
+
 
     }
 
-    fun ACReset(view: View) {
-        operacion.text = "0"
-        resultado.text = "0"
-    }
 
-
-
-    }

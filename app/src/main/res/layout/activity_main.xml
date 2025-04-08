@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#8C92AC"
+    android:orientation="vertical"
+    android:paddingTop="100px">
+
+    <TextView
+        android:id="@+id/operacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="0"
+        android:textAlignment="textEnd"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/resultado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="0"
+        android:textAlignment="textEnd"
+        android:textSize="60sp" />
+
+    <include
+        layout="@layout/buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
