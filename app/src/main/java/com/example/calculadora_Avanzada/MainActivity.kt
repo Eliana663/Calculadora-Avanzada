@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     var numero2 = ""
     var operador = ""
     var ingresandoSegundoNumero = false
-    var ingresandoPrimerNumero= true
+    var resultadoTemporal = ""
 
 
 
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
 
         }
-        //Toast.makeText(this,button.text,Toast.LENGTH_LONG).show();
+
 
         // Botón para mostrar cada vez que se pulsa una operacion
         fun pulsarOperacion(view: View) {
@@ -65,18 +65,32 @@ class MainActivity : ComponentActivity() {
             operacion.text = operador
 
 
+
         }
 
         fun igual(view: View) {
             val button: Button = view as Button
-            val resultadoTemporal = ""
+            var resultadoTemporal : Double = 0.0
+            var otroResultado =  ""
 
-            when (operador) {
-                "+" -> (numero1.toDouble() + numero2.toDouble())
-                "-" -> (numero1.toDouble() - numero2.toDouble())
-                "*" -> (numero1.toDouble() * numero2.toDouble())
-                "/" -> (numero1.toDouble() / numero2.toDouble())
+
+
+            when {
+
+
+                operacion.text.toString().contains("+") -> resultadoTemporal =  (numero1.toDouble() + numero2.toDouble())
+                operacion.text.toString().contains("-") -> resultadoTemporal =  (numero1.toDouble() - numero2.toDouble())
+                operacion.text.toString().contains("-") -> resultadoTemporal =  (numero1.toDouble() * numero2.toDouble())
+                operacion.text.toString().contains("-")-> resultadoTemporal = (numero1.toDouble() / numero2.toDouble())
+
             }
+
+
+           otroResultado =  resultadoTemporal.toString()
+            resultado.text = otroResultado
+
+
+
 
 
         }
