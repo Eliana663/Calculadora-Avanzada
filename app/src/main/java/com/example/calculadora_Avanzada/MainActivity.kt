@@ -22,16 +22,17 @@ class MainActivity : ComponentActivity() {
     var punto = ""
 
 
+
     lateinit var operacion: TextView
     lateinit var resultado: TextView
-    lateinit var formatoDecimal: DecimalFormat
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        formatoDecimal = DecimalFormat("##,######")
+
 
         operacion = this.findViewById(R.id.operacion)
         resultado = this.findViewById(R.id.resultado)
@@ -43,15 +44,12 @@ class MainActivity : ComponentActivity() {
     fun pulsarNumero(view: View) {
         val button: Button = view as Button
 
-        when {
-            ingresandoSegundoNumero -> {
-
-
+        if (ingresandoSegundoNumero) {
                 numero2 += button.text.toString()
                 resultadoTemporal += button.text.toString()
                 operacion.text = resultadoTemporal
             }
-            else -> {
+            else if (resultado.text == numero1){
 
                 numero1= numero1 + button.text.toString()
                 operacion.text = numero1
@@ -60,7 +58,6 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        }
 
         fun agregarComa (view: View) {
         val button: Button = view as Button
@@ -73,7 +70,7 @@ class MainActivity : ComponentActivity() {
                 operacion.text = numero1
             }
 
-            if (ingresandoSegundoNumero && !numero2.contains(",")) {
+            if (ingresandoSegundoNumero && !numero2.contains(","))  {
                 resultadoTemporal += button.text.toString()
                 numero2 += button.text.toString()
 
@@ -83,22 +80,27 @@ class MainActivity : ComponentActivity() {
             }
 
 
-
     }
 
-
-        // Botón para mostrar cada vez que se pulsa una operacion
+        // Botón para mostrar cada vez que se pulsa un operador
         fun pulsarOperacion(view: View) {
             val button: Button = view as Button
 
-            operador = button.tag.toString()
-            resultadoTemporal =  resultadoTemporal + button.text.toString()
-            ingresandoSegundoNumero = true
-            operacion.text = resultadoTemporal
+                    if (operador.isEmpty() || resultadoTemporal == numero1) {
+
+                        operador = button.tag.toString()
+                        resultadoTemporal = resultadoTemporal + button.text.toString()
+                        ingresandoSegundoNumero = true
+                        operacion.text = resultadoTemporal
+
+                    } else {
+                        igual(view)
+                        pulsarOperacion(view)
+                    }
+
+
 
         }
-
-
 
         fun igual(view: View) {
             val button: Button = view as Button
@@ -106,13 +108,25 @@ class MainActivity : ComponentActivity() {
 
             numero1 = numero1.replace(",", ".")
             numero2 = numero2.replace(",", ".")
-            Toast.makeText(this, resultadoTemporal, Toast.LENGTH_LONG).show()
 
-            when (operador) {
+            // Toast.makeText(this, resultadoTemporal, Toast.LENGTH_LONG).show()
+
+            when (operador ) {
 
                 "suma" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
+                "resta" -> resultadoTemporal = (numero1.toDouble() - numero2.toDouble()).toString()
+                "multiplicacion" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
+                "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
             }
-            resultado.text = resultadoTemporal
+            resultado.text = resultadoTemporal.toString().replace(".", ",")
+            resultadoTemporal = resultadoTemporal.toString().replace(".", ",")
+
+            numero1 = resultadoTemporal
+
+            numero2 = ""
+
+
+
 
         }
 
@@ -120,7 +134,11 @@ class MainActivity : ComponentActivity() {
         fun resetAC(view: View) {
             val button: Button = view as Button
             operacion.text = "0"
+            resultado.text = "0"
             resultadoTemporal=""
+            numero1 = ""
+            numero2 = ""
+            operador = ""
 
         }
 
