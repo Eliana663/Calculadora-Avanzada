@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+
     lateinit var operacion: TextView
     lateinit var resultado: TextView
 
@@ -49,9 +50,12 @@ class MainActivity : ComponentActivity() {
                 resultadoTemporal += button.text.toString()
                 operacion.text = resultadoTemporal
             }
-            else if (resultado.text == numero1){
+
+
+            else {
 
                 numero1= numero1 + button.text.toString()
+
                 operacion.text = numero1
                 resultadoTemporal = numero1
             }
@@ -71,6 +75,8 @@ class MainActivity : ComponentActivity() {
             }
 
             if (ingresandoSegundoNumero && !numero2.contains(","))  {
+
+
                 resultadoTemporal += button.text.toString()
                 numero2 += button.text.toString()
 
@@ -105,30 +111,34 @@ class MainActivity : ComponentActivity() {
         fun igual(view: View) {
             val button: Button = view as Button
 
-
             numero1 = numero1.replace(",", ".")
             numero2 = numero2.replace(",", ".")
 
-            // Toast.makeText(this, resultadoTemporal, Toast.LENGTH_LONG).show()
 
-            when (operador ) {
+
+            when (operador ){
 
                 "suma" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
                 "resta" -> resultadoTemporal = (numero1.toDouble() - numero2.toDouble()).toString()
                 "multiplicacion" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
                 "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
             }
-            resultado.text = resultadoTemporal.toString().replace(".", ",")
+            resultado.text = resultadoTemporal
             resultadoTemporal = resultadoTemporal.toString().replace(".", ",")
-
             numero1 = resultadoTemporal
-
             numero2 = ""
 
+            if (resultado.text.isNotEmpty())
+            // Toast.makeText(this, "Estoy entrando", Toast.LENGTH_LONG).show()
+            {
+                resultadoTemporal=""
+                operacion.text = ""
 
+            }
 
 
         }
+
 
 
         fun resetAC(view: View) {
@@ -139,6 +149,8 @@ class MainActivity : ComponentActivity() {
             numero1 = ""
             numero2 = ""
             operador = ""
+            punto = ""
+            ingresandoSegundoNumero = false
 
         }
 
