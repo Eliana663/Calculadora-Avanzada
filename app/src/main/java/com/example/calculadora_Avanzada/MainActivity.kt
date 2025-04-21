@@ -1,6 +1,7 @@
 package com.example.calculadora_Avanzada
 
 
+import android.annotation.SuppressLint
 import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.view.View
@@ -89,10 +90,28 @@ class MainActivity : ComponentActivity() {
     }
 
         // Botón para mostrar cada vez que se pulsa un operador
+        @SuppressLint("SuspiciousIndentation")
         fun pulsarOperacion(view: View) {
             val button: Button = view as Button
 
-                    if (operador.isEmpty() || resultadoTemporal == numero1) {
+                    if (resultadoTemporal.endsWith("+") && button.text.toString() == ("+")||
+                        resultadoTemporal.endsWith("-") && button.text.toString() == ("-") ||
+                        resultadoTemporal.endsWith("*") && button.text.toString() == ("*")||
+                        resultadoTemporal.endsWith("/") && button.text.toString() == ("/")) {
+                        return
+                    } else if (resultadoTemporal.endsWith("+") && button.text.toString() !== ("+") ||
+                        resultadoTemporal.endsWith("-") && button.text.toString() !== ("-") ||
+                        resultadoTemporal.endsWith("*") && button.text.toString() !== ("*") ||
+                        resultadoTemporal.endsWith("*") && button.text.toString() !== ("*")) {
+                        operador = button.tag.toString()
+                        resultadoTemporal = numero1 + button.text.toString()
+                        operacion.text = resultadoTemporal
+                        return
+                    }
+
+
+
+                    if (operador.isEmpty() || resultadoTemporal == numero1 ) {
 
                         operador = button.tag.toString()
                         resultadoTemporal = resultadoTemporal + button.text.toString()
@@ -111,6 +130,13 @@ class MainActivity : ComponentActivity() {
         fun igual(view: View) {
             val button: Button = view as Button
 
+           if  (resultadoTemporal.endsWith("+") && button.text.toString() == ("=")||
+               resultadoTemporal.endsWith("-") && button.text.toString() == ("=") ||
+               resultadoTemporal.endsWith("*") && button.text.toString() == ("=")||
+               resultadoTemporal.endsWith("/") && button.text.toString() == ("=")) {
+               return
+           }
+
             numero1 = numero1.replace(",", ".")
             numero2 = numero2.replace(",", ".")
 
@@ -120,21 +146,14 @@ class MainActivity : ComponentActivity() {
 
                 "suma" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
                 "resta" -> resultadoTemporal = (numero1.toDouble() - numero2.toDouble()).toString()
-                "multiplicacion" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
+                "multiplicacion" -> resultadoTemporal = (numero1.toDouble() * numero2.toDouble()).toString()
                 "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
             }
             resultado.text = resultadoTemporal
             resultadoTemporal = resultadoTemporal.toString().replace(".", ",")
             numero1 = resultadoTemporal
             numero2 = ""
-
-            if (resultado.text.isNotEmpty())
-            // Toast.makeText(this, "Estoy entrando", Toast.LENGTH_LONG).show()
-            {
-                resultadoTemporal=""
-                operacion.text = ""
-
-            }
+            ingresandoSegundoNumero = false
 
 
         }
