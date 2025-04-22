@@ -2,15 +2,15 @@ package com.example.calculadora_Avanzada
 
 
 import android.annotation.SuppressLint
-import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.calculadora.R
+import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.text.format
 
@@ -26,12 +26,7 @@ class MainActivity : ComponentActivity() {
     var punto = ""
     var operadorUsado = ""
 
-
-
     val numeros: List<String> = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
-    val operadores: List<String> = listOf("+", "-", "*", "/")
-
-
 
     lateinit var operacion: TextView
     lateinit var resultado: TextView
@@ -42,15 +37,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
         operacion = this.findViewById(R.id.operacion)
         resultado = this.findViewById(R.id.resultado)
 
 
     }
 
-    // Botón para mostrar cada vez que se pulsa un número en el textview de operacion
+
+    // Botón para mostrar cada vez que se pulsa un número
+
     fun pulsarNumero(view: View) {
         val button: Button = view as Button
 
@@ -81,10 +76,7 @@ class MainActivity : ComponentActivity() {
 
         }
         }
-
-
-
-
+// Función para agregar comas.
         fun agregarComa (view: View) {
         val button: Button = view as Button
 
@@ -109,8 +101,7 @@ class MainActivity : ComponentActivity() {
 
 
     }
-
-        // Botón para mostrar cada vez que se pulsa un operador
+    // Función  para mostrar cada vez que se pulsa un botón de operador suma, resta, multiplicación o División
         @SuppressLint("SuspiciousIndentation")
         fun pulsarOperacion(view: View) {
             val button: Button = view as Button
@@ -149,7 +140,7 @@ class MainActivity : ComponentActivity() {
 
 
         }
-
+// Función para el botón de igual (resultado operación)
         fun igual(view: View) {
             val button: Button = view as Button
 
@@ -175,12 +166,22 @@ class MainActivity : ComponentActivity() {
                 "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
             }
 
+            fun decimalFormat(numero: Double): String {
+                return  String.format("%.6f", numero)
 
-            resultadoTemporal = "=" + resultadoTemporal.toString().format("%.2f").replace(".", ",")
+            }
+            resultadoTemporal = "=" + decimalFormat(resultadoTemporal.toDouble()).toString().trimEnd('0').replace(".", ",")
+            if (resultadoTemporal.endsWith(",")) {
+                resultadoTemporal = resultadoTemporal.replace(",","")
+
+            }
+
             resultado.text =  resultadoTemporal
+            resultadoTemporal = resultadoTemporal.filter { it != '=' }
+            numero1 = resultadoTemporal
 
-            numero1 = resultadoTemporal.filter { it != '=' }
-            resultadoTemporal = numero1
+
+
             numero2 = ""
             ingresandoSegundoNumero = false
 
@@ -188,7 +189,7 @@ class MainActivity : ComponentActivity() {
         }
 
 
-
+// Botón para reiniciar absolutamente
         fun resetAC(view: View) {
             val button: Button = view as Button
             operacion.text = "0"
@@ -201,7 +202,7 @@ class MainActivity : ComponentActivity() {
             ingresandoSegundoNumero = false
 
         }
-
+// Función para calcular el porcentaje
     fun porcentaje(view: View) {
         val button: Button = view as Button
 
@@ -224,7 +225,7 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-
+// Función para calcular la potencia (sólo al cuadrado)
     fun potencia(view: View) {
         val button: Button = view as Button
         var sqr = ""
@@ -254,7 +255,7 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-
+// Función para calcular la raiz Cuadrada de un número
     fun raizCuadrada (view: View) {
         val button: Button = view as Button
         var raiz = ""
@@ -282,6 +283,74 @@ class MainActivity : ComponentActivity() {
             resultadoTemporal = numero1 + operadorUsado + numero2
 
         }
+    }
+// Función para calcular el Seno
+    fun seno (view: View) {
+
+        val button: Button = view as Button
+        var seno = ""
+        numero1 = numero1.replace(",", ".")
+        numero2 = numero2.replace(",", ".")
+
+        if (button.tag.toString() == "S" && resultado.text == "0" && operacion.text == "0") {
+            return
+        }
+
+        if (resultadoTemporal == numero1) {
+
+            seno= "sen($numero1)"
+            operacion.text = seno
+            numero1 = (sin(numero1.toDouble()).toString())
+            resultadoTemporal = numero1
+            resultado.text = numero1
+        }
+
+        if (operacion.text == resultadoTemporal) {
+            seno = "sen($numero2)"
+            numero2 = (sin(numero2.toDouble()).toString())
+            resultadoTemporal = numero1 + operadorUsado + seno
+            operacion.text = resultadoTemporal
+            resultadoTemporal = numero1 + operadorUsado + numero2
+
+        }
+
+
+
+    }
+// Función para calcular el Coseno (ojo sólo si entramos el número en radianes)
+    fun coseno (view: View) {
+
+        val button: Button = view as Button
+        var coseno = ""
+        numero1 = numero1.replace(",", ".")
+        numero2 = numero2.replace(",", ".")
+
+        if (button.tag.toString() == "C" && resultado.text == "0" && operacion.text == "0") {
+            numero1 = "0"
+            coseno= "cos($numero1)"
+            operacion.text = coseno
+            numero1 = (cos(numero1.toDouble()).toString())
+            resultado.text = numero1
+        }
+
+        if (resultadoTemporal == numero1) {
+
+            coseno= "cos($numero1)"
+            operacion.text = coseno
+            numero1 = (cos(numero1.toDouble()).toString())
+            resultadoTemporal = numero1
+            resultado.text = numero1
+        }
+
+        if (operacion.text == resultadoTemporal) {
+            coseno = "cos($numero2)"
+            numero2 = (cos(numero2.toDouble()).toString())
+            resultadoTemporal = numero1 + operadorUsado + coseno
+            operacion.text = resultadoTemporal
+            resultadoTemporal = numero1 + operadorUsado + numero2
+
+        }
+
     }
     }
 
