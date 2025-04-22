@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.calculadora.R
+import kotlin.math.pow
 
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +22,10 @@ class MainActivity : ComponentActivity() {
     var ingresandoSegundoNumero = false
     var resultadoTemporal = ""
     var punto = ""
+    var operadorUsado = ""
 
+    val numeros: List<String> = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+    val operadores: List<String> = listOf("+", "-", "*", "/")
 
 
 
@@ -60,7 +64,20 @@ class MainActivity : ComponentActivity() {
                 operacion.text = numero1
                 resultadoTemporal = numero1
             }
+
+
+        if (resultado.text.startsWith("=") && numeros.contains(button.text.toString()) && operacion.text == numero1 + operador + numero2) {
+            numero1 = ""
+            numero1 = numero1 + button.text.toString()
+            operacion.text = numero1
+            resultado.text = "0"
+            resultadoTemporal=numero1
+            operador = ""
+
+
         }
+        }
+
 
 
 
@@ -102,7 +119,7 @@ class MainActivity : ComponentActivity() {
                     } else if (resultadoTemporal.endsWith("+") && button.text.toString() !== ("+") ||
                         resultadoTemporal.endsWith("-") && button.text.toString() !== ("-") ||
                         resultadoTemporal.endsWith("*") && button.text.toString() !== ("*") ||
-                        resultadoTemporal.endsWith("*") && button.text.toString() !== ("*")) {
+                        resultadoTemporal.endsWith("/") && button.text.toString() !== ("/")) {
                         operador = button.tag.toString()
                         resultadoTemporal = numero1 + button.text.toString()
                         operacion.text = resultadoTemporal
@@ -112,9 +129,11 @@ class MainActivity : ComponentActivity() {
 
 
                     if (operador.isEmpty() || resultadoTemporal == numero1 ) {
-
+                        operadorUsado = button.text.toString()
                         operador = button.tag.toString()
-                        resultadoTemporal = resultadoTemporal + button.text.toString()
+
+                        resultadoTemporal = resultadoTemporal + operadorUsado
+
                         ingresandoSegundoNumero = true
                         operacion.text = resultadoTemporal
 
@@ -129,6 +148,8 @@ class MainActivity : ComponentActivity() {
 
         fun igual(view: View) {
             val button: Button = view as Button
+
+
 
            if  (resultadoTemporal.endsWith("+") && button.text.toString() == ("=")||
                resultadoTemporal.endsWith("-") && button.text.toString() == ("=") ||
@@ -149,9 +170,13 @@ class MainActivity : ComponentActivity() {
                 "multiplicacion" -> resultadoTemporal = (numero1.toDouble() * numero2.toDouble()).toString()
                 "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
             }
-            resultado.text = resultadoTemporal
-            resultadoTemporal = resultadoTemporal.toString().replace(".", ",")
-            numero1 = resultadoTemporal
+
+
+            resultadoTemporal = "=" + resultadoTemporal.toString().format("%.2f").replace(".", ",")
+            resultado.text =  resultadoTemporal
+
+            numero1 = resultadoTemporal.filter { it != '=' }
+            resultadoTemporal = numero1
             numero2 = ""
             ingresandoSegundoNumero = false
 
@@ -173,7 +198,54 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    fun porcentaje(view: View) {
+        val button: Button = view as Button
 
+        numero2 = numero2.replace(",", ".")
+
+        if (resultadoTemporal == numero1) {
+            operacion.text = "0";
+            resultadoTemporal = ""
+            numero1 = ""
+
+        }
+
+        if (operacion.text == resultadoTemporal) {
+            numero2 = ((numero2.toDouble()/100)*numero2.toDouble()).toString()
+            numero2 = numero2.toString().replace(".", ",")
+            resultadoTemporal = numero1 + operadorUsado + numero2
+            operacion.text = resultadoTemporal
+
+
+        }
+
+    }
+
+    fun potencia(view: View) {
+        val button: Button = view as Button
+        var sqr = ""
+        numero1 = numero1.replace(",", ".")
+        numero2 = numero2.replace(",", ".")
+
+        if (resultadoTemporal == numero1) {
+
+            sqr = "sqr($numero1)"
+            operacion.text = sqr
+            numero1 = (numero1.toDouble().pow(2).toString())
+            resultadoTemporal = numero1
+            resultado.text = numero1
+        }
+
+        if (operacion.text == resultadoTemporal) {
+            sqr = "sqr($numero2)"
+            numero2 = (numero2.toDouble().pow(2).toString())
+            resultadoTemporal = numero1 + operadorUsado + sqr
+            operacion.text = resultadoTemporal
+            resultadoTemporal = numero1 + operadorUsado + numero2
+
+        }
+
+    }
     }
 
 
