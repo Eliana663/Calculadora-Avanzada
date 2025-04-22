@@ -255,7 +255,7 @@
             android:layout_height="80dp"
             android:layout_margin="5dp"
             android:background="@drawable/stylo_borde_buttons"
-            android:onClick="operadorPulsado"
+            android:onClick="raizCuadrada"
             android:text="√"
             android:textSize="30sp"
             app:layout_column="1"

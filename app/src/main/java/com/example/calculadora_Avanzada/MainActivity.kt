@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.calculadora.R
 import kotlin.math.pow
+import kotlin.math.sqrt
+import kotlin.text.format
 
 
 class MainActivity : ComponentActivity() {
@@ -23,6 +25,8 @@ class MainActivity : ComponentActivity() {
     var resultadoTemporal = ""
     var punto = ""
     var operadorUsado = ""
+
+
 
     val numeros: List<String> = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
     val operadores: List<String> = listOf("+", "-", "*", "/")
@@ -227,6 +231,10 @@ class MainActivity : ComponentActivity() {
         numero1 = numero1.replace(",", ".")
         numero2 = numero2.replace(",", ".")
 
+        if (button.text.toString() == "x²" && resultado.text == "0" && operacion.text == "0") {
+            return
+        }
+
         if (resultadoTemporal == numero1) {
 
             sqr = "sqr($numero1)"
@@ -245,6 +253,35 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    }
+
+    fun raizCuadrada (view: View) {
+        val button: Button = view as Button
+        var raiz = ""
+        numero1 = numero1.replace(",", ".")
+        numero2 = numero2.replace(",", ".")
+
+        if (button.text.toString() == "√" && resultado.text == "0" && operacion.text == "0") {
+            return
+        }
+
+        if (resultadoTemporal == numero1) {
+
+            raiz = "√($numero1)"
+            operacion.text = raiz
+            numero1 = (sqrt(numero1.toDouble()).toString())
+            resultadoTemporal = numero1
+            resultado.text = numero1
+        }
+
+        if (operacion.text == resultadoTemporal) {
+            raiz = "√($numero2)"
+            numero2 = (sqrt(numero2.toDouble()).toString())
+            resultadoTemporal = numero1 + operadorUsado + raiz
+            operacion.text = resultadoTemporal
+            resultadoTemporal = numero1 + operadorUsado + numero2
+
+        }
     }
     }
 
