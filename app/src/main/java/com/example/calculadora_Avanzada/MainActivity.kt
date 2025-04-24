@@ -43,6 +43,41 @@ class MainActivity : ComponentActivity() {
 
 
     }
+
+    // Función para sacar operaciones básicas como suma, resta, multiplicación y división
+
+
+    fun operacionBasica() {
+
+
+        numero1 = numero1.replace(",", ".")
+        numero2 = numero2.replace(",", ".")
+
+
+
+        when (operador ){
+
+            "suma" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
+            "resta" -> resultadoTemporal = (numero1.toDouble() - numero2.toDouble()).toString()
+            "multiplicacion" -> resultadoTemporal = (numero1.toDouble() * numero2.toDouble()).toString()
+            "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
+        }
+
+        fun decimalFormat(numero: Double): String {
+            return  String.format("%.6f", numero)
+
+        }
+        resultadoTemporal = "=" + decimalFormat(resultadoTemporal.toDouble()).toString().trimEnd('0').replace(".", ",")
+
+
+        resultadoTemporal = resultadoTemporal.filter { it != '=' }
+        numero1 = resultadoTemporal
+        numero2 = ""
+        ingresandoSegundoNumero = false
+
+
+
+    }
     // Función para restaurar todos los valores a 0
 
     fun resetearValores(){
@@ -124,6 +159,7 @@ class MainActivity : ComponentActivity() {
             }
 
 
+
     }
     // Función  para mostrar cada vez que se pulsa un botón de operador suma, resta, multiplicación o División
         @SuppressLint("SuspiciousIndentation")
@@ -183,46 +219,21 @@ class MainActivity : ComponentActivity() {
         fun igual(view: View) {
             val button: Button = view as Button
 
-
-
            if  (resultadoTemporal.endsWith("+") && button.text.toString() == ("=")||
                resultadoTemporal.endsWith("-") && button.text.toString() == ("=") ||
                resultadoTemporal.endsWith("*") && button.text.toString() == ("=")||
                resultadoTemporal.endsWith("/") && button.text.toString() == ("=")) {
                return
            }
-
-            numero1 = numero1.replace(",", ".")
-            numero2 = numero2.replace(",", ".")
-
-
-
-            when (operador ){
-
-                "suma" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
-                "resta" -> resultadoTemporal = (numero1.toDouble() - numero2.toDouble()).toString()
-                "multiplicacion" -> resultadoTemporal = (numero1.toDouble() * numero2.toDouble()).toString()
-                "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
-            }
-
-            fun decimalFormat(numero: Double): String {
-                return  String.format("%.6f", numero)
-
-            }
-            resultadoTemporal = "=" + decimalFormat(resultadoTemporal.toDouble()).toString().trimEnd('0').replace(".", ",")
-            if (resultadoTemporal.endsWith(",")) {
-                resultadoTemporal = resultadoTemporal.replace(",","")
-
-            }
-
-            resultado.text =  resultadoTemporal
-            resultadoTemporal = resultadoTemporal.filter { it != '=' }
-            numero1 = resultadoTemporal
-            numero2 = ""
-            ingresandoSegundoNumero = false
-
+        if (resultadoTemporal.endsWith(",")) {
+            resetearValores()
 
         }
+            operacionBasica()
+            resultado.text =  resultadoTemporal
+
+        }
+
 
 
 // Botón para colocar todos los valores a 0
@@ -237,6 +248,8 @@ class MainActivity : ComponentActivity() {
         val button: Button = view as Button
 
         numero2 = numero2.replace(",", ".")
+
+
 
         if (resultadoTemporal == numero1) {
             operacion.text = "0"
@@ -261,8 +274,8 @@ class MainActivity : ComponentActivity() {
     fun potencia(view: View) {
     val button: Button = view as Button
     var sqr = ""
-    numero1 = numero1.replace(",", ".")
-    numero2 = numero2.replace(",", ".")
+
+
 
     if (button.text.toString() == "x²" && resultado.text == "0" && operacion.text == "0") {
         return
@@ -273,31 +286,44 @@ class MainActivity : ComponentActivity() {
         sqr = "sqr($numero1)"
 
         operacion.text = sqr
+        numero1 =  numero1.replace(",", ".")
         numero1 = (numero1.toDouble().pow(2).toString())
+        numero1 =  numero1.replace(".", ",")
         resultadoTemporal = numero1
         resultado.text = numero1
         ingresandoSegundoNumero = false
 
     } else if (resultadoTemporal.endsWith("+") || resultadoTemporal.endsWith("-") ||
-        resultadoTemporal.endsWith("*") || resultadoTemporal.endsWith("/")
-    ) {
+               resultadoTemporal.endsWith("*") || resultadoTemporal.endsWith("/") )
+     {
 
         sqr = "sqr($numero1)"
 
         resultadoTemporal = numero1 + operadorUsado + sqr
         operacion.text = resultadoTemporal
+        numero1 =  numero1.replace(",", ".")
         resultadoTemporal = (numero1.toDouble().pow(2).toString())
+        numero1 =  numero1.replace(".", ",")
         resultado.text = resultadoTemporal
-        numero1 = resultadoTemporal
+        numero2 = resultadoTemporal
+        operacionBasica()
         ingresandoSegundoNumero = false
 
-    } else if (operacion.text == resultadoTemporal) {
-        sqr = "sqr($numero1)"
+    } else if (operacion.text == resultadoTemporal ) {
 
-        numero1 = (numero2.toDouble().pow(2).toString())
+        sqr = "sqr($numero2)"
+
         resultadoTemporal = numero1 + operadorUsado + sqr
         operacion.text = resultadoTemporal
-        resultadoTemporal = numero1 + operadorUsado + numero2
+        numero2 =  numero2.replace(",", ".")
+        resultadoTemporal = (numero2.toDouble().pow(2).toString())
+        numero2 =  numero2.replace(".", ",")
+        resultado.text = resultadoTemporal
+        numero2 = resultadoTemporal
+        operacionBasica()
+        ingresandoSegundoNumero = false
+
+
 
 
 
@@ -323,7 +349,7 @@ class MainActivity : ComponentActivity() {
 
             resultadoTemporal = numero1 + operadorUsado + raiz
             operacion.text = resultadoTemporal
-            resultadoTemporal = (numero1.toDouble() + sqrt(numero1.toDouble())).toString()
+            resultadoTemporal = (numero2.toDouble() + sqrt(numero1.toDouble())).toString()
             resultado.text = resultadoTemporal
             resultadoTemporal = numero1
             ingresandoSegundoNumero=false
@@ -340,7 +366,8 @@ class MainActivity : ComponentActivity() {
             ingresandoSegundoNumero= false
         }
 
-        if (operacion.text == resultadoTemporal) {
+        if (operacion.text == resultadoTemporal ) {
+
             raiz = "√($numero2)"
             resultadoTemporal = numero1 + operadorUsado + raiz
             numero2 = (sqrt(numero2.toDouble()).toString())
@@ -400,8 +427,9 @@ class MainActivity : ComponentActivity() {
 
         if (operacion.text == resultadoTemporal) {
             seno = "sen($numero2)"
-            numero2 = (sin(numero2.toDouble()).toString())
             resultadoTemporal = numero1 + operadorUsado + seno
+            operacion.text = resultadoTemporal
+            numero2 = (sin(numero2.toDouble()).toString())
             operacion.text = resultadoTemporal
             resultadoTemporal = numero1 + operadorUsado + numero2
             ingresandoSegundoNumero= false
