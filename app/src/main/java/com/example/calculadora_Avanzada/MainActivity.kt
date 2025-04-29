@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         resultado = this.findViewById(R.id.resultado)
     }
 
-    // Función para restaurar todos los valores a 0
+    // Función para restaurar  valores a 0
 
     fun resetearValores() {
 
@@ -168,7 +168,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    // Botón para colocar todos los valores a 0
+    // Botón para colocar valores a 0
     fun resetAC(view: View) {
         val button: Button = view as Button
         resetearValores()
