@@ -7,14 +7,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import com.example.calculadora.R
 import kotlin.math.cos
-import kotlin.math.pow
-import kotlin.math.sin
-import kotlin.math.sqrt
-import kotlin.toString
-
 
 class MainActivity : ComponentActivity() {
 
@@ -26,7 +20,7 @@ class MainActivity : ComponentActivity() {
     var resultadoTemporal = ""
     var operadorUsado = ""
     var operadorAvanzado = ""
-
+    var calcular = CalcularDiferentesOperaciones()
 
     lateinit var operacion: TextView
     lateinit var resultado: TextView
@@ -36,50 +30,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         operacion = this.findViewById(R.id.operacion)
         resultado = this.findViewById(R.id.resultado)
-
-
     }
 
-    // Función para hacer operaciones básicas como suma, resta, multiplicación y división
-
-
-    fun operacionBasica() {
-
-
-        numero1 = numero1.replace(",", ".")
-        numero2 = numero2.replace(",", ".")
-
-
-
-        when (operador) {
-
-            "suma" -> resultadoTemporal = (numero1.toDouble() + numero2.toDouble()).toString()
-            "resta" -> resultadoTemporal = (numero1.toDouble() - numero2.toDouble()).toString()
-            "multiplicacion" -> resultadoTemporal =
-                (numero1.toDouble() * numero2.toDouble()).toString()
-
-            "division" -> resultadoTemporal = (numero1.toDouble() / numero2.toDouble()).toString()
-        }
-
-
-        resultadoTemporal =
-            "=" + decimalFormat(resultadoTemporal.toDouble()).toString().replace(".", ",")
-
-
-        resultadoTemporal = resultadoTemporal.filter { it != '=' }
-        numero1 = resultadoTemporal
-        numero2 = ""
-        ingresandoSegundoNumero = false
-
-
-    }
-
-    fun decimalFormat(numero: Double): String {
-        return String.format("%.2f", numero)
-
-    }
     // Función para restaurar todos los valores a 0
 
     fun resetearValores() {
@@ -91,20 +46,13 @@ class MainActivity : ComponentActivity() {
         numero1 = ""
         operador = ""
         ingresandoSegundoNumero = false
-
     }
-
-    // función para revisar que todos los valores estén correctamente ingresados antes de ejecutar cualquier operación básica
-
 
     // función para añadir el número 1
     fun addNumero1() {
-
-
         operacion.text = numero1
         resultado.text = "0"
         operador = ""
-
 
     }
 
@@ -128,12 +76,7 @@ class MainActivity : ComponentActivity() {
 
             addNumero1()
 
-        } else if ((operacion.text.contains("%") && numeros.contains(button.text.toString())) ||
-            (operacion.text.contains("sqr") && numeros.contains(button.text.toString())) ||
-            (operacion.text.contains("√") && numeros.contains(button.text.toString())) ||
-            (operacion.text.contains("sen") && numeros.contains(button.text.toString())) ||
-            (operacion.text.contains("cos") && numeros.contains(button.text.toString()))
-        ) {
+        } else if ((operacion.text.contains("%")  && numeros.contains(button.text.toString()) )) {
             resetearValores()
             numero1 += button.text.toString()
             addNumero1()
@@ -154,17 +97,15 @@ class MainActivity : ComponentActivity() {
             numero1 = "0$coma"
             operacion.text = numero1
         }
-
         if (!numero1.contains(",")) {
 
             numero1 += coma
             operacion.text = numero1
         }
-
-
         if (ingresandoSegundoNumero && !numero2.contains(",")) {
 
             numero2 += coma
+            resultadoTemporal = numero1 + operadorUsado + numero2
             operacion.text = resultadoTemporal
 
         }
@@ -179,56 +120,50 @@ class MainActivity : ComponentActivity() {
         operadorUsado = button.text.toString()
         operador = button.tag.toString()
 
-        if ((button.text.toString() == operadorUsado && operacion.text == "0")) {
+        when {
 
-            numero1 = "0"
+            (resultadoTemporal.endsWith(operadorUsado) && button.text.toString() == operadorUsado) -> return
+            (resultadoTemporal.endsWith(operadorUsado) && button.text.toString() !== operadorUsado) -> {
+                operador = button.tag.toString()
+                resultadoTemporal = numero1 + button.text.toString()
+                operacion.text = resultadoTemporal
+                return
+            }
 
-            numero1 += operadorUsado
-            operacion.text = numero1
-            ingresandoSegundoNumero = true
+            (operador.isEmpty() || operacion.text == numero1 || resultado.text == numero1) -> {
+                resultadoTemporal = numero1 + operadorUsado
+                ingresandoSegundoNumero = true
+                operacion.text = resultadoTemporal
+            }
 
+            (button.text.toString() == operadorUsado && operacion.text == "0") -> {
+                numero1 = "0"
+                resultadoTemporal = numero1 +  operadorUsado
+                operacion.text = resultadoTemporal
+                ingresandoSegundoNumero = true
+            }
 
+            else -> {
+                igual(view)
+                pulsarOperacion(view)
+            }
         }
-
-        if (resultadoTemporal.endsWith(operadorUsado) && button.text.toString() == operadorUsado) {
-            return
-
-        } else if (resultadoTemporal.endsWith(operadorUsado) && button.text.toString() !== operadorUsado) {
-            operador = button.tag.toString()
-            resultadoTemporal = numero1 + button.text.toString()
-            operacion.text = resultadoTemporal
-            return
-        }
-
-
-        if (operador.isEmpty() || operacion.text == numero1 || resultado.text == numero1 ) {
-
-            resultadoTemporal = numero1 + operadorUsado
-            ingresandoSegundoNumero = true
-            operacion.text = resultadoTemporal
-
-        } else {
-            igual(view)
-            pulsarOperacion(view)
-        }
-
-
     }
 
-    // Función para el botón de igual (resultado operación)
+    // Función al pulsar botón igual
     fun igual(view: View) {
         val button: Button = view as Button
 
-        if (resultadoTemporal.endsWith("+") && button.text.toString() == ("=") ||
-            resultadoTemporal.endsWith("-") && button.text.toString() == ("=") ||
-            resultadoTemporal.endsWith("*") && button.text.toString() == ("=") ||
-            resultadoTemporal.endsWith("/") && button.text.toString() == ("=")
-        ) {
-            return
-        }
+        if (resultadoTemporal.endsWith(operadorUsado) && button.text.toString() == (operadorUsado))
+        { return }
 
-        operacionBasica()
+
+        resultadoTemporal = calcular.operacionBasica(numero1, numero2, operador)
         resultado.text = resultadoTemporal
+        numero1 = resultadoTemporal
+        numero2 = ""
+        ingresandoSegundoNumero = false
+
 
     }
 
@@ -237,7 +172,7 @@ class MainActivity : ComponentActivity() {
     fun resetAC(view: View) {
         val button: Button = view as Button
         resetearValores()
-        operacion.text = "0"
+
 
     }
 
@@ -247,69 +182,52 @@ class MainActivity : ComponentActivity() {
 
         numero2 = numero2.replace(",", ".")
 
-
-
-        if (ingresandoSegundoNumero == false) {
-            operacion.text = "0"
-            resultadoTemporal = ""
-            numero1 = ""
-
-        } else if (operacion.text == resultadoTemporal) {
-            resultadoTemporal = "$numero1$operadorUsado$numero2%"
-            operacion.text = resultadoTemporal
-
-            numero2 = ((numero2.toDouble() / 100)).toString()
-            numero2 = numero2.toString().replace(".", ",")
-            numero1 = numero2
-            resultado.text = numero1
-            resultadoTemporal = numero1
-            ingresandoSegundoNumero = false
-
+        if ((operacion.text == numero1) || ((button.text.toString() == "%")  && operacion.text == "0")) {
+            resetearValores()
         }
 
-    }
+        when {
 
-    // Ejecuta todo tipo de operaciones avanzadas
-    fun calcularOperacionAvanzada(numero: String): String {
+            resultadoTemporal.endsWith(operadorUsado) -> {
+                numero2 = ((numero1.toDouble() / 100).toString().replace(".", ","))
+                resultadoTemporal = numero1 + operadorUsado + numero2
+                operacion.text = resultadoTemporal
+                resultado.text = numero2
+                ingresandoSegundoNumero = false
 
-
-        resultadoTemporal = when (operadorAvanzado) {
-            "sqr" -> (numero.toDouble().pow(2).toString())
-            "sqrt" -> (sqrt(numero.toDouble()).toString())
-            "sin" -> (sin(numero.toDouble()).toString())
-            "cos" -> (cos(numero.toDouble()).toString())
-
-            else -> {
-                numero
             }
+            operacion.text == resultadoTemporal -> {
+                numero2 = ((numero2.toDouble() / 100).toString().replace(".", ","))
+                resultadoTemporal = numero1 + operadorUsado + numero2
+                operacion.text = resultadoTemporal
+                resultado.text = numero2
+                ingresandoSegundoNumero = false
+            }
+
         }
 
-        return decimalFormat(resultadoTemporal.toDouble()).toString().replace(".", ",")
 
     }
 
-
-    // Función para calcular potencia, raiz cuadrada, seno y coseno (operaciones avanzadas)
+    // Función al pulsar cualquier operación avazada ya sea potencia, raiz cuadrada, seno y coseno (operaciones avanzadas)
 
     fun pulsarOperacionAvanzada(view: View) {
         val button: Button = view as Button
         val operadorsinCoseno: List<String> = listOf("sqr", "sqrt", "sin")
         operadorAvanzado = button.tag.toString()
 
-        if (resultadoTemporal.contains(operadorAvanzado) && button.text.toString() == operadorAvanzado) {
+        if ((resultadoTemporal.contains(operadorAvanzado) && button.text.toString() == operadorAvanzado) ||
+            (operadorsinCoseno.contains(operadorAvanzado) && resultado.text == "0" && operacion.text == "0")) {
             return
-        }
-            if (operadorsinCoseno.contains(operadorAvanzado) && resultado.text == "0" && operacion.text == "0") {
-                return
-
 
             } else if (operadorAvanzado == "cos" && resultado.text == "0" && operacion.text == "0") {
 
                 numero1 = "0"
                 resultadoTemporal = "$operadorAvanzado($numero1)"
                 operacion.text = resultadoTemporal
-                numero1 = (cos(numero1.toDouble()).toString())
-                resultado.text = numero1
+                resultadoTemporal= calcular.OperacionAvanzada(numero1, operadorAvanzado)
+                resultado.text = resultadoTemporal
+                resultadoTemporal = numero1
                 ingresandoSegundoNumero = false
 
 
@@ -324,7 +242,7 @@ class MainActivity : ComponentActivity() {
                     resultadoTemporal = "$operadorAvanzado($numero1)"
                     operacion.text = resultadoTemporal
                     ingresandoSegundoNumero = false
-                    resultadoTemporal = calcularOperacionAvanzada(numero1)
+                    resultadoTemporal = calcular.OperacionAvanzada(numero1, operadorAvanzado)
                     resultado.text = resultadoTemporal
                     numero1 = resultadoTemporal
                 }
@@ -332,9 +250,10 @@ class MainActivity : ComponentActivity() {
                 (resultadoTemporal.endsWith(operadorUsado)) -> {
                     resultadoTemporal = "$numero1$operadorUsado$operadorAvanzado($numero1)"
                     operacion.text = resultadoTemporal
-                    resultadoTemporal = calcularOperacionAvanzada(numero1)
+                    resultadoTemporal = calcular.OperacionAvanzada(numero1, operadorAvanzado)
                     resultado.text = resultadoTemporal
                     numero2 = resultadoTemporal
+                    ingresandoSegundoNumero = false
 
 
                 }
@@ -342,9 +261,10 @@ class MainActivity : ComponentActivity() {
                 (numero2.isNotEmpty() && resultado.text != numero1) -> {
                     resultadoTemporal = "$numero1$operadorUsado$operadorAvanzado($numero2)";
                     operacion.text = resultadoTemporal
-                    resultadoTemporal = calcularOperacionAvanzada(numero2)
+                    resultadoTemporal = calcular.OperacionAvanzada(numero2, operadorAvanzado)
                     resultado.text = resultadoTemporal
                     numero2 = resultadoTemporal
+                    ingresandoSegundoNumero = false
 
                 }
 
