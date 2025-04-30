@@ -42,12 +42,7 @@ class CalcularDiferentesOperaciones {
     fun operacionBasica(numero1: String, numero2: String, operador: String): String {
 
 
-        var numero1 = numero1.replace(",", ".")
-        var numero2 = numero2.replace(",", ".")
-
-
-
-        var resultadoTemporal =   when (operador ) {
+           var resultadoTemporal =   when (operador ) {
 
             "suma" -> (numero1.toDouble() + numero2.toDouble()).toString()
             "resta" -> (numero1.toDouble() - numero2.toDouble()).toString()
@@ -59,11 +54,10 @@ class CalcularDiferentesOperaciones {
         }
 
 
-        resultadoTemporal =
-            "=" + decimalFormat(resultadoTemporal.toDouble()).toString().replace(".", ",")
+        resultadoTemporal = decimalFormat(resultadoTemporal.toDouble()).toString()
 
 
-        resultadoTemporal = resultadoTemporal.filter { it != '=' }
+      //  resultadoTemporal = resultadoTemporal.filter { it != '=' }
 
         return resultadoTemporal
 
