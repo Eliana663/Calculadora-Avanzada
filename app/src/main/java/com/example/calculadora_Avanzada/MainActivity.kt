@@ -21,8 +21,8 @@ class MainActivity : ComponentActivity() {
     var operadorPantalla = ""
     var operadorAvanzado = ""
     var calcular = CalcularDiferentesOperaciones()
-    val dec = DecimalFormat("#,00")
     var ingresandoOperacionAvanzada = false
+
 
     lateinit var pantallaSuperior: TextView
     lateinit var pantallaInferior: TextView
@@ -47,32 +47,55 @@ class MainActivity : ComponentActivity() {
         numero2 = ""
         operador = ""
         ingresandoSegundoNumero = false
+        ingresandoOperacionAvanzada = false
         resultadoSuperior = ""
         resultadoInferior = ""
         operadorPantalla = ""
         operadorAvanzado = ""
+
     }
 
 
     fun actualizarPantallaSuperior() {
 
 
-        resultadoSuperior = if (ingresandoSegundoNumero || ingresandoOperacionAvanzada) {
+        if (!ingresandoOperacionAvanzada) {
+
+        resultadoSuperior = if (ingresandoSegundoNumero) {
             numero1 + operadorPantalla + numero2
-        } else if (numero2 == "" && resultadoInferior !== "") {
+        } else if (numero2 == "" && resultadoInferior !== ""  ) {
             numero1 + operadorPantalla
         } else {
             numero1
-
+        }
         }
 
+
+        if (ingresandoOperacionAvanzada) {
+
+
+            resultadoSuperior = if  (ingresandoSegundoNumero && numero2 != "" && operadorAvanzado != "%"){
+                "$numero1$operadorPantalla$operadorAvanzado($numero2)"
+
+            } else if (operadorAvanzado == "%") {
+                "$numero1$operadorPantalla$numero2$operadorAvanzado"
+
+            } else if (numero2 == "" && ingresandoSegundoNumero) {
+                "$numero1$operadorPantalla$operadorAvanzado($numero1)"
+
+
+            } else {
+                "$operadorAvanzado($numero1)"
+            }
+
+        }
         if (resultadoSuperior.contains(".")) {
             resultadoSuperior = resultadoSuperior.replace(".", ",")
         }
         pantallaSuperior.text = resultadoSuperior
+         }
 
 
-    }
 
     fun actualizarPantallaInferior() {
         resultadoInferior = resultadoInferior.replace(".", ",")
@@ -87,9 +110,11 @@ class MainActivity : ComponentActivity() {
 
         if (ingresandoSegundoNumero) {
             numero2 += button.text.toString()
+        } else if (numero1 != "") {
+            resetearValores()
+            numero1 = numero1 + button.text.toString()
         } else {
             numero1 = numero1 + button.text.toString()
-
         }
         actualizarPantallaSuperior();
     }
@@ -125,8 +150,8 @@ class MainActivity : ComponentActivity() {
 
     fun pulsarOperacion(view: View) {
         val button: Button = view as Button
-        operadorPantalla = button.text.toString()
         operador = button.tag.toString()
+        operadorPantalla = button.text.toString()
 
         if (!ingresandoSegundoNumero) {
             if (numero1 == "") {
@@ -138,6 +163,8 @@ class MainActivity : ComponentActivity() {
         }
 
         actualizarPantallaSuperior()
+
+
     }
 
 
@@ -175,112 +202,73 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    // Función para calcular el porcentaje
+
     fun pulsarOperacionAvanzada(view: View) {
         val button: Button = view as Button
         operadorAvanzado = button.tag.toString()
 
-        if (numero1 == "%") {
+
+        ingresandoOperacionAvanzada = true
+
+        if (!ingresandoSegundoNumero && operadorAvanzado  == "%") {
             resetearValores()
+            return
         }
 
-        when {
-            (!ingresandoSegundoNumero) && (ingresandoOperacionAvanzada) -> numero1 =
-                calcular.OperacionAvanzada(numero1, operadorAvanzado)
+        if (!ingresandoSegundoNumero ) {
 
-            (ingresandoSegundoNumero) && (ingresandoOperacionAvanzada) -> numero2 =
-                calcular.OperacionAvanzada(numero2, operadorAvanzado)
+
+            if (numero1 == "") {
+                numero1 = "0"
+                calculoAvanzado()
+
+            } else if (operadorAvanzado == ("cos")) {
+                calculoAvanzado()
+
+            } else {
+                calculoAvanzado()
+            }
+
+        } else {
+            calculoAvanzado()
         }
 
     }
-}
-//
-//        when {
-//
-//            resultadoSuperior.endsWith(operadorPantalla) -> {
-//                numero2 = ((numero1.toDouble() / 100).toString().replace(".", ","))
-//                resultadoSuperior = numero1 + operadorPantalla + numero2
-//                pantallaSuperior.text = resultadoSuperior
-//                pantallaInferior.text = numero2
-//                ingresandoSegundoNumero = false
-//
-//            }
-//            pantallaSuperior.text == resultadoSuperior -> {
-//                numero2 = ((numero2.toDouble() / 100).toString().replace(".", ","))
-//                resultadoSuperior = numero1 + operadorPantalla + numero2
-//                pantallaSuperior.text = resultadoSuperior
-//                pantallaInferior.text = numero2
-//                ingresandoSegundoNumero = false
-//            }
-//
-////        }
-//
-//
-//    }
 
-    // Función al pulsar cualquier operación avazada ya sea potencia, raiz cuadrada, seno y coseno (operaciones avanzadas)
-//
-//    fun pulsarOperacionAvanzada(view: View) {
-//        val button: Button = view as Button
-//        val operadorsinCoseno: List<String> = listOf("sqr", "sqrt", "sin")
-//        operadorAvanzado = button.tag.toString()
-//
-//        if ((resultadoSuperior.contains(operadorAvanzado) && button.text.toString() == operadorAvanzado) ||
-//            (operadorsinCoseno.contains(operadorAvanzado) && pantallaInferior.text == "0" && pantallaSuperior.text == "0")) {
-//            return
-//
-//            } else if (operadorAvanzado == "cos" && pantallaInferior.text == "0" && pantallaSuperior.text == "0") {
-//
-//                numero1 = "0"
-//                resultadoSuperior = "$operadorAvanzado($numero1)"
-//                pantallaSuperior.text = resultadoSuperior
-//                resultadoSuperior= calcular.OperacionAvanzada(numero1, operadorAvanzado)
-//                pantallaInferior.text = resultadoSuperior
-//                resultadoSuperior = numero1
-//                ingresandoSegundoNumero = false
-//
-//
-//            }
-//            numero1 = numero1.replace(",", ".")
-//            numero2 = numero2.replace(",", ".")
-//
-//            when {
-//
-//                (pantallaSuperior.text == numero1) -> {
-//
-//                    resultadoSuperior = "$operadorAvanzado($numero1)"
-//                    pantallaSuperior.text = resultadoSuperior
-//                    ingresandoSegundoNumero = false
-//                    resultadoSuperior = calcular.OperacionAvanzada(numero1, operadorAvanzado)
-//                    pantallaInferior.text = resultadoSuperior
-//                    numero1 = resultadoSuperior
-//                }
-//
-//                (resultadoSuperior.endsWith(operadorPantalla)) -> {
-//                    resultadoSuperior = "$numero1$operadorPantalla$operadorAvanzado($numero1)"
-//                    pantallaSuperior.text = resultadoSuperior
-//                    resultadoSuperior = calcular.OperacionAvanzada(numero1, operadorAvanzado)
-//                    pantallaInferior.text = resultadoSuperior
-//                    numero2 = resultadoSuperior
-//                    ingresandoSegundoNumero = false
-//
-//
-//                }
-//
-//                (numero2.isNotEmpty() && pantallaInferior.text != numero1) -> {
-//                    resultadoSuperior = "$numero1$operadorPantalla$operadorAvanzado($numero2)";
-//                    pantallaSuperior.text = resultadoSuperior
-//                    resultadoSuperior = calcular.OperacionAvanzada(numero2, operadorAvanzado)
-//                    pantallaInferior.text = resultadoSuperior
-//                    numero2 = resultadoSuperior
-//                    ingresandoSegundoNumero = false
-//
-//                }
-//
-//            }
-//        }
-//    }
-//
+    fun actualizarPantallaNumero2() {
+
+        actualizarPantallaSuperior()
+        numero2 = resultadoInferior
+        actualizarPantallaInferior()
+        ingresandoOperacionAvanzada = false
+
+    }
+    fun calculoAvanzado() {
+
+        if (!ingresandoSegundoNumero) {
+            resultadoInferior = calcular.OperacionAvanzada(numero1, operadorAvanzado)
+
+            actualizarPantallaSuperior()
+            numero1 = resultadoInferior
+            actualizarPantallaInferior()
+            numero2 = ""
+            ingresandoOperacionAvanzada = false
+
+        } else if (numero2 == "") {
+            resultadoInferior = calcular.OperacionAvanzada(numero1, operadorAvanzado)
+            actualizarPantallaNumero2()
+
+        } else {
+            resultadoInferior = calcular.OperacionAvanzada(numero2, operadorAvanzado)
+            actualizarPantallaNumero2()
+        }
+
+
+
+
+    }
+}
+
 
 
 

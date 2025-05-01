@@ -23,16 +23,19 @@ class CalcularDiferentesOperaciones {
         var resultadoTemporal = when (operadorAvanzado) {
 
             "sqr" -> (numero.toDouble().pow(2).toString())
-            "sqrt" -> (sqrt(numero.toDouble()).toString())
+            "√"   -> (sqrt(numero.toDouble()).toString())
             "sin" -> (sin(numero.toDouble()).toString())
             "cos" -> (cos(numero.toDouble()).toString())
+            "%"   -> ((numero.toDouble() / 100).toString())
 
             else -> {
                 numero
             }
         }
 
-        return decimalFormat(resultadoTemporal.toDouble()).toString().replace(".", ",")
+        resultadoTemporal =  decimalFormat(resultadoTemporal.toDouble()).toString()
+
+        return  resultadoTemporal
 
     }
 
@@ -56,8 +59,6 @@ class CalcularDiferentesOperaciones {
 
         resultadoTemporal = decimalFormat(resultadoTemporal.toDouble()).toString()
 
-
-      //  resultadoTemporal = resultadoTemporal.filter { it != '=' }
 
         return resultadoTemporal
 
