@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Calculadora_Avanzada</string>
+    <string name="btn_suma">+</string>
+    <string name="btn_resta">-</string>
+    <string name="btn_multiplicacion">*</string>
+    <string name="btn_division">÷</string>
+    <string name="btn_resetear">AC</string>
+    <string name="ingreseNumero"> Ingrese Numero</string>
+    <string name="resultado"> Resultado </string>
+    <string name="calculadora"> CALCULADORA </string>
+    <string name="Nuno"> 1 </string>
+    <string name="Ndos"> 2 </string>
+    <string name="Ntres"> 3 </string>
+    <string name="Ncuatro"> 4 </string>
+    <string name="Ncinco"> 5 </string>
+    <string name="Nseis"> 6 </string>
+    <string name="Nsiete"> 7 </string>
+    <string name="Nocho"> 8 </string>
+    <string name="Nnueve"> 9 </string>
+    <string name="Ncero"> 0 </string>
+    <string name="Igual"> = </string>
+
+
+
+</resources>
