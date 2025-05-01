@@ -26,7 +26,7 @@ class CalcularDiferentesOperaciones {
             "√"   -> (sqrt(numero.toDouble()).toString())
             "sin" -> (sin(numero.toDouble()).toString())
             "cos" -> (cos(numero.toDouble()).toString())
-            "%"   -> ((numero.toDouble() / 100).toString())
+
 
             else -> {
                 numero
@@ -39,6 +39,20 @@ class CalcularDiferentesOperaciones {
 
     }
 
+    fun OperacionAvanzadaPorcentaje (numero1: String, numero2: String, operadorAvanzado: String): String {
+
+        var resultadoTemporal = when (operadorAvanzado) {
+
+            "%" -> ((numero1.toDouble() * numero2.toDouble() / 100).toString())
+            else -> {
+                numero1
+            }
+        }
+
+        resultadoTemporal =  decimalFormat(resultadoTemporal.toDouble()).toString()
+
+        return  resultadoTemporal
+    }
     // Función para hacer operaciones básicas como suma, resta, multiplicación y división
 
 

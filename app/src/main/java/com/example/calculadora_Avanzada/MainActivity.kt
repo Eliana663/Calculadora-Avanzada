@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
 
         if (ingresandoSegundoNumero) {
             numero2 += button.text.toString()
-        } else if (numero1 != "") {
+        } else if (numero1 != "" && resultadoInferior != "") {
             resetearValores()
             numero1 = numero1 + button.text.toString()
         } else {
@@ -255,11 +255,19 @@ class MainActivity : ComponentActivity() {
             ingresandoOperacionAvanzada = false
 
         } else if (numero2 == "") {
-            resultadoInferior = calcular.OperacionAvanzada(numero1, operadorAvanzado)
+            resultadoInferior = if (operadorAvanzado != "%") {
+                calcular.OperacionAvanzada(numero1, operadorAvanzado)
+            } else {
+                calcular.OperacionAvanzadaPorcentaje(numero1, numero2, operadorAvanzado)
+            }
             actualizarPantallaNumero2()
 
         } else {
-            resultadoInferior = calcular.OperacionAvanzada(numero2, operadorAvanzado)
+            resultadoInferior = if (operadorAvanzado != "%") {
+                calcular.OperacionAvanzada(numero2, operadorAvanzado)
+            } else {
+                calcular.OperacionAvanzadaPorcentaje(numero1, numero2, operadorAvanzado)
+            }
             actualizarPantallaNumero2()
         }
 
